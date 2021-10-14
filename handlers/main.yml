@@ -1,0 +1,7 @@
+---
+
+- name: restart nextcloud
+  systemd:
+    name: nextcloud
+    state: restarted
+  when: nextcloud_service_state != 'stopped'

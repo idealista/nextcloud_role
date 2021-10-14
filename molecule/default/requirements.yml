@@ -1,0 +1,13 @@
+---
+
+- src: https://github.com/idealista/nginx_role
+  version: 3.5.2
+  name: nginx
+
+- src: https://github.com/idealista/php_role
+  version: 1.4.0
+  name: php
+
+- src: https://github.com/idealista/mysql_role
+  version: 4.1.0
+  name: mysql

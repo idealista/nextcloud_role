@@ -1,0 +1,19 @@
+---
+- name: prepare_database
+  hosts: nextclouddatabase_group
+  handlers:
+    - include: handlers/main.yml
+  roles:
+    - role: mysql
+      tags: mysql
+  post_tasks:
+    - include: includes/mariadb.yml
+      tags: mysql
+
+- name: prepare_nginx_php
+  hosts: nextcloud_group
+  roles:
+    - role: nginx
+      tags: nginx
+    - role: php
+      tags: php

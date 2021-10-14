@@ -1,0 +1,54 @@
+---
+- name: NextCloud | Check configured instance
+  stat:
+    path: "{{ nextcloud_root_path }}/config/config.php"
+  register: configured_check
+
+- name: NextCloud | Configuration
+  shell: |
+    php occ  maintenance:install --database "{{ nextcloud_database_type }}" --database-name "{{ nextcloud_database_name }}"  --database-host="{{ nextcloud_database_host }}" --database-port="{{ nextcloud_database_port }}" --database-user "{{ nextcloud_database_user }}" --database-pass "{{ nextcloud_database_password }}" --admin-user "{{ nextcloud_admin_user }}" --admin-pass "{{ nextcloud_admin_password }}" --data-dir "{{ nextcloud_data_dir }}"
+  args:
+    chdir: "{{ nextcloud_root_path }}"
+  when: not configured_check.stat.exists
+
+- name: NextCloud | Check settings
+  shell: |
+    cat "{{ nextcloud_root_path }}"/config/config.php
+  register: settings_check
+  when: nextcloud_http_overwrite is defined
+  changed_when: false
+  no_log: true
+
+- name: NextCloud | Ensure overwrite protocol
+  vars:
+    overwrite_protocol_check: "'overwriteprotocol' => '{{ nextcloud_http_overwrite }}'"
+  shell: |
+    php occ config:system:set overwriteprotocol --value="{{ nextcloud_http_overwrite }}"
+  args:
+    chdir: "{{ nextcloud_root_path }}"
+  when: nextcloud_http_overwrite is defined and not settings_check.stdout.find(overwrite_protocol_check) != -1
+
+- name: NextCloud | Ensure trusted domains
+  vars:
+    trusted_domains_check: "{{ item.0 }} => '{{ item.1 }}'"
+  shell: |
+    php occ config:system:set trusted_domains "{{ item.0 }}" --value="{{ item.1 }}"
+  with_indexed_items: "{{ nextcloud_trusted_domains }}"
+  args:
+    chdir: "{{ nextcloud_root_path }}"
+  when: nextcloud_trusted_domains is defined and not settings_check.stdout.find(trusted_domains_check) != -1
+
+- name: NextCloud | Ensure config file
+  file:
+    name: "{{ nextcloud_root_path }}/config/config.php"
+    state: file
+    owner: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+
+- name: NextCloud | Ensure data directory
+  file:
+    name: "{{ nextcloud_data_dir }}"
+    state: directory
+    owner: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+    recurse: true

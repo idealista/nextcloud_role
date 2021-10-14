@@ -1,0 +1,40 @@
+---
+## General
+# Version
+nextcloud_version: 22.1.1
+
+# Package URL
+nextcloud_release_name: "nextcloud-{{ nextcloud_version }}"
+nextcloud_package: "{{ nextcloud_release_name }}.tar.bz2"
+nextcloud_url: "https://download.nextcloud.com/server/releases/{{ nextcloud_package }}"
+
+# Package paths
+nextcloud_download_path: /usr/src
+nextcloud_package_path: "{{ nextcloud_download_path }}/{{ nextcloud_package }}"
+
+# Installation path
+nextcloud_deploy_path: /var/www
+nextcloud_root_path: "{{ nextcloud_deploy_path }}/nextcloud"
+
+# Documentation
+nextcloud_documentation_link: "https://docs.nextcloud.com/"
+
+# NextCloud
+## ADJUST VARIABLES TO YOUR CONVENIENCE
+nextcloud_user: nextcloud
+nextcloud_group: nextcloud
+nextcloud_user_shell: /usr/sbin/nologin
+nextcloud_admin_user: "admin"
+nextcloud_admin_password: "admin"
+
+# NextCloud Database
+nextcloud_database_type: ""  # CURRENTLY SUPPORTS MYSQL, MARIADB AND PGSQL
+nextcloud_database_name: "nextcloud"
+nextcloud_database_host: ""
+nextcloud_database_port: 3306
+nextcloud_data_dir: "/var/lib/data"
+
+# Configuration
+nextcloud_http_overwrite: https
+nextcloud_trusted_domains:
+  - localhost

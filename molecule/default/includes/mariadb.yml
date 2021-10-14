@@ -1,0 +1,11 @@
+---
+
+- name: Mariadb - Copy conf 50
+  template:
+    src: "{{ item }}"
+    dest: /etc/mysql/mariadb.conf.d/
+    owner: "{{ mysql_user }}"
+    group: "{{ mysql_group }}"
+  with_items:
+    - "{{ playbook_dir }}/templates/mariadb/50-server.cnf"
+  notify: restart-mysql

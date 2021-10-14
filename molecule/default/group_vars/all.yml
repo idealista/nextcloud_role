@@ -1,0 +1,136 @@
+---
+# PHP
+php_version: 7.4.7
+php_fpm_install: true
+php_memory_limit: 512M
+php_max_execution_time: 3600
+php_upload_max_filesize: 8M
+php_post_max_size: 8M
+php_fpm_user: "{{ nginx_user }}"
+php_fpm_group: "{{ nginx_group }}"
+php_fpm_socket: /run/php-fpm.sock
+php_pid_file: /run/php-fpm.pid
+php_fpm_service_enabled: true
+php_fpm_pool_definitions:
+  www:
+    user: "{{ php_fpm_user }}"
+    group: "{{ php_fpm_group }}"
+    listen: "{{ php_fpm_socket }}"
+    listen_owner: "{{ nginx_user }}"
+    listen_group: "{{ nginx_group }}"
+    listen_mode: "0660"
+    clear_env: "no"
+    pm:
+      type: dynamic
+      max_children: 10
+      start_servers: 2
+      min_spare_servers: 2
+      max_spare_servers: 4
+php_required_libs:
+  - autoconf
+  - automake
+  - bison
+  - flex
+  - libtool
+  - re2c
+  - libxml2-dev
+  - pkg-config
+  - libsqlite3-dev
+  - libldap2-dev
+  - bzip2
+  - libbz2-dev
+  - zlib1g
+  - zlib1g-dev
+  - libjpeg-dev
+  - libpng-dev
+  - libfreetype6-dev
+  - libgmp-dev
+  - libpspell-dev
+  - librecode-dev
+  - libonig-dev
+  - libssl-dev
+  - libzip-dev
+  - libmariadb-dev
+  - libcurl4-gnutls-dev
+  - libmagickwand-dev
+
+php_compile_options:
+  - enable-mbstring
+  - with-zip
+  - enable-ctype
+  - enable-dom
+  - enable-gd
+  - with-iconv
+  - enable-json
+  - enable-xml
+  - enable-cli
+  - enable-posix
+  - enable-session
+  - enable-simplexml
+  - enable-xmlreader
+  - enable-xmlwriter
+  - enable-intl
+  - enable-fileinfo
+  - enable-opcache
+  - enable-pdo
+  - with-pear
+  - with-jpeg
+  - with-freetype
+  - with-bz2
+  - with-ldap
+  - with-gmp
+  - enable-bcmath
+  - with-zlib-dir=/usr
+  - with-openssl=yes
+  - with-zlib=/usr
+  - with-pdo-mysql
+  - with-curl=/usr
+
+## NGINX
+nginx_version: 1.18.0
+nginx_log_path: /var/log/nginx
+nginx_logrotate_enabled: false
+nginx_user: nginx
+nginx_group: nginx
+nextcloud_application_name: nextcloud
+
+## MYSQL
+mysql_user: mysql
+mysql_group: mysql
+
+# Database connections
+mysql_root_user: root
+nextcloud_database_user: "{{ mysql_user }}"
+nextcloud_database_password: mysql
+
+mysql_bind_addres: "0.0.0.0"
+mysql_allowed_hosts: "%"
+mysql_databases:
+  - name: "{{ nextcloud_database_name }}"
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+mysql_users:
+  - name: "{{ nextcloud_database_user }}"
+    host: "{{ mysql_allowed_hosts }}"
+    password: "{{ nextcloud_database_password }}"
+    priv:
+      - 'nextcloud.*:ALL'
+
+# MariaDB tunning
+mysql_flavour: mariadb
+
+## Next Cloud
+nextcloud_user: "{{ php_fpm_user }}"
+nextcloud_group: "{{ php_fpm_group }}"
+nextcloud_deploy_path: /var/www
+nextcloud_root_path: "{{ nextcloud_deploy_path }}/nextcloud"
+nextcloud_database_type: "mysql"
+nextcloud_database_name: "nextcloud"
+nextcloud_database_host: "nextclouddatabase"
+
+## nextcloud config
+nextcloud_http_overwrite: http
+nextcloud_trusted_domains:
+  - localhost
+  - trusted.domain
+  - also.trusted.domain

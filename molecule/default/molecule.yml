@@ -1,0 +1,56 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  yamllint .
+  ansible-lint .
+platforms:
+  - name: nextclouddatabase #172.18.0.2
+    groups:
+      - nextclouddatabase_group
+    image: ${MOLECULE_DISTRO:-debian:buster-slim}
+    privileged: true
+    exposed_ports:
+      - 3306/tcp
+    published_ports:
+      - 0.0.0.0:3306:3306/tcp
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /run/lock
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    command: '/lib/systemd/systemd'
+    networks:
+      - name: nextcloud
+    purge_networks: yes
+    stop_signal: 'RTMIN+3'
+
+  - name: nextcloud
+    groups:
+      - nextcloud_group
+    image: ${MOLECULE_DISTRO:-debian:buster-slim}
+    privileged: true
+    # exposed_ports:
+    #   - 80/tcp
+    # published_ports:
+    #   - 0.0.0.0:80:80/tcp
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /run/lock
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    command: '/lib/systemd/systemd'
+    networks:
+      - name: nextcloud
+    purge_networks: yes
+    stop_signal: 'RTMIN+3'
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

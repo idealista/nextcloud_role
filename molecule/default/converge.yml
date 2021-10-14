@@ -1,0 +1,6 @@
+---
+- name: Converge
+  hosts: nextcloud_group
+  roles:
+    - role: nextcloud_role
+      tags: nextcloud
