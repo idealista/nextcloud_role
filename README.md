@@ -1,7 +1,7 @@
 # Nextcloud Ansible role
 ![Logo](logo.gif)
 
-[![Build Status](https://travis-ci.com/idealista/nextcloud_role.png)](https://travis-ci.com/idealista/nextcloud_role)
+[![Build Status](https://app.travis-ci.com/idealista/nextcloud_role.svg)](https://app.travis-ci.com/github/idealista/nextcloud_role)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-idealista.nextcloud_role-B62682.svg)](https://galaxy.ansible.com/idealista/nextcloud_role)
 
 
