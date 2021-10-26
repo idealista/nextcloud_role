@@ -8,7 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 ### Added
 ### Removed
 ### Fixed
-
+- *[#1](https://github.com/idealista/nextcloud_role/issues/1) Travis build still failed due timeout* @xtianae7
+- *[#2](https://github.com/idealista/nextcloud_role/issues/2) Propper check for configuration* @xtianae7
 ## [1.0.1](https://github.com/idealista/nextcloud_role/tree/1.0.1)
  ### [Full Changelog](https://github.com/idealista/nextcloud_role/compare/1.0.0...1.0.1)
 ### Fixed
