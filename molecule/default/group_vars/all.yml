@@ -1,10 +1,12 @@
 ---
 # PHP
-php_version: 7.4.7
-php_fpm_install: true
+php_max_execution_time: 30
+php_max_input_time: 60
+php_max_input_nesting_level: 64
+php_max_input_vars: 1000
 php_memory_limit: 512M
-php_max_execution_time: 3600
-php_upload_max_filesize: 8M
+php_upload_max_filesize: 2M
+php_max_file_uploads: 20
 php_post_max_size: 8M
 php_fpm_user: "{{ nginx_user }}"
 php_fpm_group: "{{ nginx_group }}"
@@ -26,65 +28,51 @@ php_fpm_pool_definitions:
       start_servers: 2
       min_spare_servers: 2
       max_spare_servers: 4
-php_required_libs:
-  - autoconf
-  - automake
-  - bison
-  - flex
-  - libtool
-  - re2c
-  - libxml2-dev
-  - pkg-config
-  - libsqlite3-dev
-  - libldap2-dev
-  - bzip2
-  - libbz2-dev
-  - zlib1g
-  - zlib1g-dev
-  - libjpeg-dev
-  - libpng-dev
-  - libfreetype6-dev
-  - libgmp-dev
-  - libpspell-dev
-  - librecode-dev
-  - libonig-dev
-  - libssl-dev
-  - libzip-dev
-  - libmariadb-dev
-  - libcurl4-gnutls-dev
-  - libmagickwand-dev
 
-php_compile_options:
-  - enable-mbstring
-  - with-zip
-  - enable-ctype
-  - enable-dom
-  - enable-gd
-  - with-iconv
-  - enable-json
-  - enable-xml
-  - enable-cli
-  - enable-posix
-  - enable-session
-  - enable-simplexml
-  - enable-xmlreader
-  - enable-xmlwriter
-  - enable-intl
-  - enable-fileinfo
-  - enable-opcache
-  - enable-pdo
-  - with-pear
-  - with-jpeg
-  - with-freetype
-  - with-bz2
-  - with-ldap
-  - with-gmp
-  - enable-bcmath
-  - with-zlib-dir=/usr
-  - with-openssl=yes
-  - with-zlib=/usr
-  - with-pdo-mysql
-  - with-curl=/usr
+php_ini_configuration_template:
+  src: "{{ playbook_dir }}/templates/php/php.ini.j2"
+  dest: "/usr/local/etc/php/php.ini"
+
+php_fpm_configuration_template:
+  src: "{{ playbook_dir }}/templates/php/php-fpm.conf.j2"
+  dest: "/usr/local/etc/php-fpm.conf"
+
+php_fpm_service_configuration_template:
+  src: "{{ playbook_dir }}/templates/php/php-fpm.service.j2"
+  dest: "/lib/systemd/system/php-fpm.service"
+
+php_fpm_configuration:
+  log_level: notice
+  process_max: 0
+  daemonize: "yes"
+
+#php_required_libs:
+#  - autoconf
+#  - automake
+#  - bison
+#  - flex
+#  - libtool
+#  - re2c
+#  - libxml2-dev
+#  - pkg-config
+#  - libsqlite3-dev
+#  - libldap2-dev
+#  - bzip2
+#  - libbz2-dev
+#  - zlib1g
+#  - zlib1g-dev
+#  - libjpeg-dev
+#  - libpng-dev
+#  - libfreetype6-dev
+#  - libgmp-dev
+#  - libpspell-dev
+#  - librecode-dev
+#  - libonig-dev
+#  - libssl-dev
+#  - libzip-dev
+#  - libmariadb-dev
+#  - libcurl4-gnutls-dev
+#  - libmagickwand-dev
 
 ## NGINX
 nginx_version: 1.18.0

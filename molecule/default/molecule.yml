@@ -32,7 +32,7 @@ platforms:
   - name: nextcloud
     groups:
       - nextcloud_group
-    image: ${MOLECULE_DISTRO:-debian:buster-slim}
+    image: ${MOLECULE_DISTRO:-php:7.3-fpm-buster}
     privileged: true
     # exposed_ports:
     #   - 80/tcp

@@ -6,7 +6,19 @@ FROM {{ item.registry.url }}/{{ item.image }}
 FROM {{ item.image }}
 {% endif %}
 
-# install minimal packages for debian slim images
+{% if item.image == 'php:7.3-fpm-buster' %}
+RUN apt-get update && \
+    apt-get install -y python sudo bash ca-certificates iproute2 systemd systemd-sysv python-pip \
+                    libtool re2c libxml2-dev bzip2 libbz2-dev libzip-dev zlib1g zlib1g-dev libmariadb-dev libmagickwand-dev && \
+    apt-get clean && \
+    docker-php-ext-install zip \
+        pcntl \
+        mysqli \
+        pdo_mysql \
+        gd
+{% else %}
 RUN apt-get update && \
     apt-get install -y python sudo bash ca-certificates iproute2 systemd systemd-sysv python-pip && \
     apt-get clean
+
+{% endif %}

@@ -12,7 +12,7 @@ env:
   jobs:
     - MOLECULE_DISTRO=debian:buster-slim
 script:
-  - travis_wait 60 pipenv run molecule test --all
+  - pipenv run molecule test --all
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
   email:
