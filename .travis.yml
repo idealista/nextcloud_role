@@ -8,6 +8,10 @@ services:
 install:
   - pip install pipenv
   - pipenv sync
+env:
+  jobs:
+    - DATABASE_MOLECULE_DISTRO=debian:buster-slim
+    - NEXTCLOUD_MOLECULE_DISTRO=php:7.3-fpm-buster
 script:
   - pipenv run molecule test --all
 notifications:
