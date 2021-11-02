@@ -1,0 +1,41 @@
+---
+- name: PHP | Template php.ini
+  template:
+    src: "{{ php_ini_configuration_template.src }}"
+    dest: "{{ php_ini_configuration_template.dest }}"
+
+- name: PHP | Ensure php executable is symlinked into a standard path.
+  file:
+    src: "/usr/local/bin/php"
+    dest: /usr/bin/php
+    state: link
+
+- name: PHP | Template php-fpm configuration file
+  template:
+    src: "{{ php_fpm_configuration_template.src }}"
+    dest: "{{ php_fpm_configuration_template.dest }}"
+  notify: restart php-fpm
+
+- name: PHP | Delete default php-fpm config
+  file:
+    path: "/usr/local/etc/php-fpm.conf.default"
+    state: absent
+
+- name: PHP | Template php-fpm service file
+  template:
+    src: "{{ php_fpm_service_configuration_template.src }}"
+    dest: "{{ php_fpm_service_configuration_template.dest }}"
+  notify: restart php-fpm
+
+- name: PHP | Ensure php-fpm executable is symlinked into a standard path.
+  file:
+    src: "/usr/local/sbin/php-fpm"
+    dest: /usr/sbin/php-fpm
+    state: link
+
+- name: PHP | Configuring PHP-FPM service
+  systemd:
+    name: "php-fpm"
+    state: "started"
+    enabled: "true"
+    daemon_reload: "yes"

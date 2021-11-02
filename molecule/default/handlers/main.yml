@@ -4,3 +4,8 @@
     name: mysql
     state: restarted
   when: mysql_service_state != 'stopped'
+
+- name: restart php-fpm
+  systemd:
+    name: php-fpm
+    state: restarted
