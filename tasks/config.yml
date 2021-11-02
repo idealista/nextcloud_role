@@ -1,14 +1,22 @@
 ---
 - name: NextCloud | Check configured instance
   stat:
-    path: "{{ nextcloud_root_path }}/config/config.php"
+    path: "{{ nextcloud_root_path }}/installed.txt"
   register: configured_check
 
 - name: NextCloud | Configuration
-  shell: |
-    php occ  maintenance:install --database "{{ nextcloud_database_type }}" --database-name "{{ nextcloud_database_name }}"  --database-host="{{ nextcloud_database_host }}" --database-port="{{ nextcloud_database_port }}" --database-user "{{ nextcloud_database_user }}" --database-pass "{{ nextcloud_database_password }}" --admin-user "{{ nextcloud_admin_user }}" --admin-pass "{{ nextcloud_admin_password }}" --data-dir "{{ nextcloud_data_dir }}"
-  args:
-    chdir: "{{ nextcloud_root_path }}"
+  block:
+    - name: NextCloud | Configuration
+      shell: |
+        php occ  maintenance:install --database "{{ nextcloud_database_type }}" --database-name "{{ nextcloud_database_name }}"  --database-host="{{ nextcloud_database_host }}" --database-port="{{ nextcloud_database_port }}" --database-user "{{ nextcloud_database_user }}" --database-pass "{{ nextcloud_database_password }}" --admin-user "{{ nextcloud_admin_user }}" --admin-pass "{{ nextcloud_admin_password }}" --data-dir "{{ nextcloud_data_dir }}"
+      args:
+        chdir: "{{ nextcloud_root_path }}"
+    
+    - name: NextCloud | Create check file
+      file:
+        path: "{{ nextcloud_root_path }}/installed.txt"
+        state: touch
+        mode: 0755
   when: not configured_check.stat.exists
 
 - name: NextCloud | Check settings

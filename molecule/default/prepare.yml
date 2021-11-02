@@ -12,8 +12,11 @@
 
 - name: prepare_nginx_php
   hosts: nextcloud_group
+  handlers:
+    - include: handlers/main.yml
   roles:
     - role: nginx
       tags: nginx
-    - role: php
+  post_tasks:
+    - include: includes/php.yml
       tags: php

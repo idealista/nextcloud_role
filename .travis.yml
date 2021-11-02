@@ -10,11 +10,10 @@ install:
   - pipenv sync
 env:
   jobs:
-    
-    - MOLECULE_DISTRO=debian:buster-slim
+    - DATABASE_MOLECULE_DISTRO=debian:buster-slim
+    - NEXTCLOUD_MOLECULE_DISTRO=php:7.3-fpm-buster
 script:
   - pipenv run molecule test --all
-
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
   email:
