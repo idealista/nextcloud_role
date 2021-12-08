@@ -1,11 +1,11 @@
 ---
 
 - name: NEXTCLOUD | Install
-  include: install.yml
+  include_tasks: install.yml
   tags:
     - nextcloud_install
 
 - name: NEXTCLOUD | Configure
-  include: config.yml
+  include_tasks: config.yml
   tags:
     - nextcloud_configure
