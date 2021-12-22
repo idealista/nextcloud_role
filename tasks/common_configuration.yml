@@ -1,0 +1,36 @@
+---
+- name: NEXTCLOUD | Ensure nextcloud group
+  group:
+    name: "{{ nextcloud_group }}"
+    system: true
+    state: present
+
+- name: NEXTCLOUD | Ensure nextcloud user
+  user:
+    name: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    createhome: false
+  tags:
+    - nextcloud_install
+    - nextcloud_upgrade
+
+- name: NextCloud | Ensure data directory
+  file:
+    name: "{{ nextcloud_data_dir }}"
+    state: directory
+    owner: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+    recurse: true
+  tags:
+    - nextcloud_install
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Download package
+  get_url:
+    url: "{{ nextcloud_url }}"
+    dest: "{{ nextcloud_package_path }}"
+  tags:
+    - nextcloud_install
+    - nextcloud_upgrade

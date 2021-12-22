@@ -1,7 +1,7 @@
 ---
 ## General
 # Version
-nextcloud_version: 22.1.1
+nextcloud_version: 22.2.3
 
 # Package URL
 nextcloud_release_name: "nextcloud-{{ nextcloud_version }}"
@@ -26,6 +26,13 @@ nextcloud_group: nextcloud
 nextcloud_user_shell: /usr/sbin/nologin
 nextcloud_admin_user: "admin"
 nextcloud_admin_password: "admin"
+nextcloud_backup_directories:
+  - data/
+  - apps/
+  - themes/
+
+nextcloud_backup_files:
+  - config/config.php
 
 # NextCloud Database
 nextcloud_database_type: ""  # CURRENTLY SUPPORTS MYSQL, MARIADB AND PGSQL

@@ -1,9 +1,4 @@
 ---
-- name: NextCloud | Check downloaded
-  stat:
-    path: "{{ nextcloud_download_path }}/{{ nextcloud_package }}"
-  register: nextcloud_check
-
 - name: NEXTCLOUD | Ensure deploy paths
   file:
     dest: "{{ item }}"
@@ -15,14 +10,6 @@
   tags:
     - nextcloud_install
 
-- name: NEXTCLOUD | Download package
-  get_url:
-    url: "{{ nextcloud_url }}"
-    dest: "{{ nextcloud_package_path }}"
-  when: not nextcloud_check.stat.exists
-  tags:
-    - nextcloud_install
-
 - name: NEXTCLOUD | Extract downloaded package
   unarchive:
     src: "{{ nextcloud_package_path }}"
@@ -30,7 +17,5 @@
     owner: "{{ nextcloud_user }}"
     group: "{{ nextcloud_group }}"
     remote_src: True
-  when: not nextcloud_check.stat.exists
   tags:
     - nextcloud_install
-

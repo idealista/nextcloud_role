@@ -2,21 +2,21 @@
 - name: prepare_database
   hosts: nextclouddatabase_group
   handlers:
-    - include: handlers/main.yml
+    - import_tasks: handlers/main.yml
   roles:
     - role: mysql
       tags: mysql
   post_tasks:
-    - include: includes/mariadb.yml
+    - include_tasks: includes/mariadb.yml
       tags: mysql
 
 - name: prepare_nginx_php
   hosts: nextcloud_group
   handlers:
-    - include: handlers/main.yml
+    - import_tasks: handlers/main.yml
   roles:
     - role: nginx
       tags: nginx
   post_tasks:
-    - include: includes/php.yml
+    - include_tasks: includes/php.yml
       tags: php

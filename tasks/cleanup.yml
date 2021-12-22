@@ -1,0 +1,10 @@
+---
+- name: NEXTCLOUD | Delete backup
+  file:
+    path: "{{ nextcloud_deploy_path }}nextcloud-old/"
+    state: absent
+
+- name: NEXTCLOUD | Delete package
+  file:
+    path: "{{ nextcloud_download_path }}/{{ nextcloud_package }}"
+    state: absent

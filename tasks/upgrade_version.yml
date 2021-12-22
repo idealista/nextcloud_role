@@ -1,0 +1,93 @@
+---
+- name: NEXTCLOUD | Delete check file
+  file:
+    path: "{{ nextcloud_root_path }}/installed.txt"
+    state: absent
+  tags:
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Backup old version
+  copy:
+    src: "{{ nextcloud_root_path }}/"
+    dest: "{{ nextcloud_root_path }}-old"
+    remote_src: true
+  tags:
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Extract downloaded package
+  unarchive:
+    src: "{{ nextcloud_package_path }}"
+    dest: "{{ nextcloud_deploy_path }}"
+    owner: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+    remote_src: True
+  tags:
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Clean directories to be replaced
+  file:
+    path: "{{ nextcloud_root_path }}/{{ item }}"
+    state: absent
+  with_items: "{{ nextcloud_backup_directories }}"
+  tags:
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Clean files to be replaced
+  file:
+    path: "{{ nextcloud_root_path }}/{{ item }}"
+    state: absent
+  with_items: "{{ nextcloud_backup_files }}"
+  tags:
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Ensure Directories
+  file:
+    path: "{{ nextcloud_root_path }}/{{ item }}"
+    state: directory
+    owner: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+  with_items: "{{ nextcloud_backup_directories }}"
+  tags:
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Restore Directories
+  copy:
+    src: "{{ nextcloud_root_path }}-old/{{ item }}"
+    dest: "{{ nextcloud_root_path }}/{{ item }}"
+    owner: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+    remote_src: true
+  with_items: "{{ nextcloud_backup_directories }}"
+  tags:
+    - nextcloud_upgrade
+
+- name: NEXTCLOUD | Restore Files
+  copy:
+    src: "{{ nextcloud_root_path }}-old/{{ item }}"
+    dest: "{{ nextcloud_root_path }}/{{ item }}"
+    owner: "{{ nextcloud_user }}"
+    group: "{{ nextcloud_group }}"
+    remote_src: true
+  with_items: "{{ nextcloud_backup_files }}"
+  tags:
+    - nextcloud_upgrade
+
+- name: NextCloud | Configuration
+  shell: |
+    php occ upgrade
+  args:
+    chdir: "{{ nextcloud_root_path }}"
+  become: true
+  become_user: "{{ nextcloud_user }}"
+  register: upgrade_check
+  changed_when: "'Nextcloud or one of the apps require upgrade' in upgrade_check.stdout" 
+  tags:
+    - nextcloud_upgrade
+
+- name: NextCloud | Create check file
+  file:
+    path: "{{ nextcloud_root_path }}/installed.txt"
+    state: touch
+    mode: 0755
+  tags:
+    - nextcloud_upgrade

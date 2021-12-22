@@ -7,7 +7,7 @@ lint: |
   yamllint .
   ansible-lint .
 platforms:
-  - name: nextclouddatabase #172.18.0.2
+  - name: nextclouddatabase
     groups:
       - nextclouddatabase_group
     image: ${DATABASE_MOLECULE_DISTRO:-debian:buster-slim}

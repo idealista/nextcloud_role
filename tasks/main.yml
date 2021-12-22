@@ -1,11 +1,43 @@
 ---
+- name: NEXTCLOUD | Check nextcloud version
+  shell: |
+    php occ --version
+  args:
+    chdir: "{{ nextcloud_root_path }}"
+  register: nextcloud_check
+  changed_when: false
+  ignore_errors: true
+  become: true
+  become_user: "{{ nextcloud_user }}"
 
-- name: NEXTCLOUD | Install
-  include: install.yml
+- name: NEXTCLOUD | Common configuration
+  include_tasks: common_configuration.yml
   tags:
     - nextcloud_install
+    - nextcloud_upgrade
+  when:
+    nextcloud_check is failed or nextcloud_version not in nextcloud_check.stdout
 
-- name: NEXTCLOUD | Configure
-  include: config.yml
+- name: NextCloud | Configuration
+  block:
+    - name: NEXTCLOUD | Install
+      include_tasks: fresh_install.yml
+
+    - name: NEXTCLOUD | Configure
+      include_tasks: config.yml
+  when:
+    nextcloud_check is failed
   tags:
-    - nextcloud_configure
+      - nextcloud_install
+
+- name: NEXTCLOUD | Upgrade
+  include_tasks: upgrade_version.yml
+  tags:
+    - nextcloud_upgrade
+  when:
+    nextcloud_check is not failed and nextcloud_version not in nextcloud_check.stdout
+
+- name: NEXTCLOUD | Cleanup
+  include_tasks: cleanup.yml
+  tags:
+    - nextcloud_cleanup

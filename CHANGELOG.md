@@ -5,7 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 ## [Unreleased](https://github.com/idealista/nextcloud_role/tree/develop)
 ### Changed
+- *[#10](https://github.com/idealista/nextcloud_role/issues/10) Changed some tasks names to differentiate if we are executing a fresh installation or upgrading versions.
 ### Added
+- *[#10](https://github.com/idealista/nextcloud_role/issues/10) Allowing the role to upgrade nextcloud versions.* @xtianae7
+
 ### Removed
 ### Fixed
 

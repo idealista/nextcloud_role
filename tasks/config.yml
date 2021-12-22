@@ -8,16 +8,18 @@
   block:
     - name: NextCloud | Configuration
       shell: |
-        php occ  maintenance:install --database "{{ nextcloud_database_type }}" --database-name "{{ nextcloud_database_name }}"  --database-host="{{ nextcloud_database_host }}" --database-port="{{ nextcloud_database_port }}" --database-user "{{ nextcloud_database_user }}" --database-pass "{{ nextcloud_database_password }}" --admin-user "{{ nextcloud_admin_user }}" --admin-pass "{{ nextcloud_admin_password }}" --data-dir "{{ nextcloud_data_dir }}"
+        php occ maintenance:install --database "{{ nextcloud_database_type }}" --database-name "{{ nextcloud_database_name }}"  --database-host="{{ nextcloud_database_host }}" --database-port="{{ nextcloud_database_port }}" --database-user "{{ nextcloud_database_user }}" --database-pass "{{ nextcloud_database_password }}" --admin-user "{{ nextcloud_admin_user }}" --admin-pass "{{ nextcloud_admin_password }}" --data-dir "{{ nextcloud_data_dir }}"
       args:
         chdir: "{{ nextcloud_root_path }}"
-    
+
     - name: NextCloud | Create check file
       file:
         path: "{{ nextcloud_root_path }}/installed.txt"
         state: touch
         mode: 0755
   when: not configured_check.stat.exists
+  become: true
+  become_user: "{{ nextcloud_user }}"
 
 - name: NextCloud | Check settings
   shell: |
@@ -35,6 +37,8 @@
   args:
     chdir: "{{ nextcloud_root_path }}"
   when: nextcloud_http_overwrite is defined and not settings_check.stdout.find(overwrite_protocol_check) != -1
+  become: true
+  become_user: "{{ nextcloud_user }}"
 
 - name: NextCloud | Ensure trusted domains
   vars:
@@ -45,6 +49,8 @@
   args:
     chdir: "{{ nextcloud_root_path }}"
   when: nextcloud_trusted_domains is defined and not settings_check.stdout.find(trusted_domains_check) != -1
+  become: true
+  become_user: "{{ nextcloud_user }}"
 
 - name: NextCloud | Ensure config file
   file:
@@ -52,11 +58,3 @@
     state: file
     owner: "{{ nextcloud_user }}"
     group: "{{ nextcloud_group }}"
-
-- name: NextCloud | Ensure data directory
-  file:
-    name: "{{ nextcloud_data_dir }}"
-    state: directory
-    owner: "{{ nextcloud_user }}"
-    group: "{{ nextcloud_group }}"
-    recurse: true
