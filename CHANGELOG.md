@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 ### Added
 ### Removed
 ### Fixed
+- *[#2](https://github.com/idealista/nextcloud_role/issues/8) Fix deprecation warnings* @Pablohn26
 
 ## [2.0.0](https://github.com/idealista/nextcloud_role/tree/2.0.0)
  ### [Full Changelog](https://github.com/idealista/nextcloud_role/compare/1.0.1...2.0.0)
